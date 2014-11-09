@@ -1,69 +1,25 @@
+@font-face {
+    font-family: Delicious;
+    src: url('../../fonts/Quicksand-Regular.otf');
+}
+
+h3, h2 { font-family: Delicious; }
 
 .top-div {
     background-color: rgb(22, 160, 133);
     background-size: 100% 100%;
     width: 100%;
-    height: 768px;
+    height: 100&;
     text-align: center;
     color: white;
+    overflow: hidden;
+    font-family: Delicious;
 }
-
-.second-div {
-    color: black;
-    text-align: center;
-    margin-top: 0;
-    background-color: rgb(149, 165, 166);
-    width: 100%;
-    height: 768px;
-
-}
-
-.third-div {
-    color: white;
-    background-color: rgb(22, 160, 133);
-    background-size: 100% 100%;
-    width: 100%;
-    height: 50px;
-    margin: 0;
-}
-.footerInfo {
-    text-align: center;
-    padding-top: 20px;
-   
-}
-.features {
-    text-align: justify;
-    max-width: 550px;
-    margin: 250px  auto;
-}
-.listfeature {
-    float:left;
-    margin:0 5px;
-}
-.featureRule{
-    border-color: rgb(22, 160, 133);
-    border-top: solid 3px rgb(22, 160, 133);
-}
-.footerInfo a {
-    color: #FFFFFF;
+small a {
     text-decoration: none;
-}
-ul {
-    list-style: none;
-        padding:0;
-    margin:0;
-}
-li {
-    margin-top: 10px;
-    
-}
-li:before {
-    content: '\25A0';
-    font-family:"Arial Black";
-    color: rgb(22, 160, 133); /* or whatever color you prefer */
+    color: #FFFFFF;
 }
 .titleImg {
-    margin-top: 100px;
     max-width: 100%;
 }
 .titleMotto {

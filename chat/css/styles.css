@@ -25,7 +25,6 @@ body {
 
 }
 .titleImg {
-    margin-top: 50px;
     max-width: 100%;
 }
 
@@ -105,30 +104,44 @@ p {
     padding-top: 10px;
 }
 ul {
+    text-decoration: none;
     list-style-type: none;
     padding: 0;
 }
 
 .chatlist li {
+    overflow: none;
+    text-decoration: none;
     color: white;
     display: flex;
     justify-content:center;
-    align-content:center;
+    align-content: center;
     flex-direction:column;
     height: 35px;
-    background-color: #303030;
-    border: solid 2px #303030;
+    background-color: #044F67;
+    border: solid 2px #044F67;
     margin-top: 10px;
     border-radius: 4px;
-    box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
-    
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
 }
+.chatlist a {
+    text-decoration: none;
+}
+.chatlist .nearbyChatsOwner{
+    background-color: #A87CA0;
+    border: solid 2px #A87CA0;
+
+}
+
+li:hover{
+    box-shadow: 2px 5px 2px rgba(0,0,0,0.5);
+}
+
 .logoutbtn {
     height: 2em;
     width: 100%;
     border: 0px;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
+    margin: 0;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
@@ -159,7 +172,20 @@ ul {
     color:#f8f8f8;
     font-size: 1.5em;
 }
+form.logoutForm {
+    margin-bottom: 0;
+}
 
+.menuIcon {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 2%;
+    max-width: 15%;
+    height: auto;
+}
+.menubar {
+    margin: 0 auto;
+}
 
 
 @media screen and (max-width: 400px) {
