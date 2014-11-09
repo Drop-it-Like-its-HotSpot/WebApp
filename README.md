@@ -6,6 +6,6 @@ WebApp
 ##Create Chatrooms
 ##Delete Chatrooms(if admin)
 ##User Settings 
-    ###Display Name, Update Location(psuedo setting), change email(maybe), change password
+    Display Name, Update Location(psuedo setting), change email(maybe), change password
 ##Admin Panel
 
