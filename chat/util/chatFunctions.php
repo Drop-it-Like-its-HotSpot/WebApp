@@ -54,5 +54,48 @@ error_reporting(-1);
         }
         return false;
     }
-   
+    //change database time to friendly time
+    function fnDisplay_Timestamp($sDT){
+        $date = date('m-d-Y H:i:s', strtotime($sDT));
+        return $date;
+    }
+    //posting a message
+    function postMessage($room_id, $user_id, $message, $session_id){
+        $ch = curl_init('54.172.35.180:8080/api/messages/');
+        // The data to send to the API
+        $postData = array(
+            'room_id' => $room_id,
+            'user_id' => $user_id,
+            'message' => $message,
+            'session_id' => $session_id
+        );
+        echo('HERE');
+        var_dump($postData);
+        echo('HERENOW');
+        // Setup cURL
+
+        curl_setopt_array($ch, array(
+            CURLOPT_POST => TRUE,
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+            CURLOPT_POSTFIELDS => json_encode($postData)
+        ));
+        // Send the request
+        $response = curl_exec($ch);
+        
+        // Check for errors
+        if($response === FALSE){
+            die(curl_error($ch));
+        }
+
+        // Decode the response
+        $responseData = json_decode($response, TRUE);
+    }
+    if(isset($_POST['action'])){
+        if($_POST['action'] == 'sendMessage'){
+            postMessage($_POST['room_id'], $_POST['user_id'], $_POST['message'], $_POST['session_id']);
+        }
+    }
 ?>

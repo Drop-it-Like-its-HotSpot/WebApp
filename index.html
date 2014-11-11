@@ -18,14 +18,14 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  
+
   <body>
     <div class="top-div">
-        <a href="chat/"><img src="img/logo.png"></a><br />
+        <a href="chat/"><img class="thelogo" src="img/logo.png"></a><br />
         <img class="titleImg" src="img/Title.png">
         <h3><p class="titleMotto">Because meeting strangers is hard.</p></h3>
-        
-        
+
+
         <form role="form" id="subscribe" class="form-inline signup">
             <div class="form-group">
                 <input type="email" class="form-control" id="email" placeholder="Enter email" required>
@@ -36,8 +36,8 @@
             </div>
         </form>
         <img class="phone" src="img/phone.png">
-        
-        
+
+
         <br /><br />
         <small>
           <p>&copy;2014 Hotspot |  <a href="legal.html">Legal</a> |  <a href="contact.html">Contact</a></p>
@@ -60,14 +60,14 @@
             $.post("util/subscribe.php", {
               email: email
               }, function(data) {
-              alert(data);
+              $('#forminfo').html(data);
             });
           }
           e.preventDefault();
-          $('#forminfo').html('Thanks for Subscribing, you will recieve a confirmation email shortly.');
-        });        
+          //$('#forminfo').html('Thanks for Subscribing, you will recieve a confirmation email soon.');
+        });
       });
-      
+
     </script>
   </body>
 

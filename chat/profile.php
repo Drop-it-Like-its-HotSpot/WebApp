@@ -4,12 +4,12 @@ ini_set('display_startup_errors',1);
 error_reporting(-1);
     //if the cookies aren't set, the user isn't logged int
     if(!isset($_COOKIE['session_id'])){
-        header( 'Location: index.php' );
+        header( 'Location: index.html' );
     }else {
         include('util/functions.php');
         $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
         if(!isset($user['User_id'])){
-            header( 'Location: index.php' );
+            header( 'Location: index.html' );
         }
     }
 ?>
@@ -21,13 +21,9 @@ error_reporting(-1);
 <body>
    
     <div class="header">
-        <a href="/chat/"><img src="img/logo.png"></a><br />
+        <a href="/chat/"><img class="thelogo" src="img/logo.png"></a><br />
         <img class="titleImg" src="../img/Title.png">
-        <div class="menubar">
-            <a href="/chat/" alt="Home"><img class="menuIcon" src="img/home.png" alt="Home" /></a>
-            <a href="createchat.php" alt="Create Chat Room"><img class="menuIcon" src="img/chatplus.png" alt="Create Chat Room" /></a>
-            <a href="settings.php" alt="User Settings"><img class="menuIcon" src="img/settings.png" alt="User Settings" /></a>
-        </div>
+
     </div>
    
    
@@ -47,88 +43,47 @@ error_reporting(-1);
                 </p>
 
             </div>
-            <form class="logoutForm" action="logout.php">
+            <form class="logoutform">
                 <button class="logoutbtn" onclick='deletecookies()'>Logout</button>
             </form>
         </div>
         
         <div class="listview">
             <div class="divTopper">
-                CHATROOMS
+                DASHBOARD
+            </div>
+            <div class="menubar">
+                <img onclick="goHome()" class="menuIcon" src="img/home.png" alt="Home" />
+                <img onclick="loadCreateChatroom()" class="menuIcon" src="img/chatplus.png" alt="Create Chat Room" />
+                <img onclick="userSettings()" class="menuIcon" src="img/settings.png" alt="User Settings" />
             </div>
             <div class="content">
                 <div class="chatlist">
-                    <span style="color: #A87CA0"><b>Your Rooms</b></span> | <span style="color: #044F67"><b>Nearby Rooms</b></span>
-                    <ul class="chatHeader">
-                        Joined Chats:
-                        <?php
-                            //TODO: Use new API call to fetch rooms I'm in. :-p 
-                            $joinedChats = getJoinedChats($_COOKIE['ID'],$_COOKIE['session_id']);
-                            $count = 0;
-                            foreach($joinedChats as $chat){
-                                if($chat['User_id'] == $_COOKIE['ID']){
-                                    $chatInfo = getChatroom($chat['Room_id'], $_COOKIE['session_id']);
-                                    if($chatInfo['Room_Admin'] == $_COOKIE['ID']){    
-                                        echo('<a href="chatroom.php?rid='.$chatInfo['chat_id'].'&'.time().'"><li class="nearbyChatsOwner">');
-                                        echo $chatInfo['Chat_title'];
-                                        echo('</li></a>');
-                                        ++$count;
-                                    }else{
-                                        echo('<a href="chatroom.php?rid='.$chatInfo['chat_id'].'&'.time().'"><li class="nearbyChats">');
-                                        echo $chatInfo['Chat_title'];
-                                        echo('</li></a>');
-                                        ++$count;
-                                    }
-                                }
-                            }
-                            if($count == 0){
-                                echo('<br /><small>You\'re not part of any chatrooms; why don\'t you create one or join a happening room nearby!</small>');
-                            }
-                        ?>
-                    </ul>
-                    <ul class="chatHeader">
-                        Nearby Chats:
-                        <?php
-                            $nearbyChats = getNearbyChats($_COOKIE['session_id']);
-                            $status = false;
-                            $count = 0;
-                            foreach($nearbyChats as $chat){
-                                foreach($joinedChats as $joined){
-                                    $info = getChatroom($joined['Room_id'], $_COOKIE['session_id']);
-                                    if($joined['User_id'] == $_COOKIE['ID'] && $info['chat_id'] == $chat['chat_id']){
-                                        $status = true;
-                                    }
-                                }
-                                if(!$status){
-                                    if($chat['Room_Admin'] == $_COOKIE['ID']){    
-                                        echo('<a href="chatroom.php?rid='.$chat['chat_id'].'&'.time().'"><li class="nearbyChatsOwner">');
-                                        echo $chat['Chat_title'];
-                                        echo('</li></a>');
-                                        ++$count;
-                                    }else{
-                                        echo('<a href="chatroom.php?rid='.$chat['chat_id'].'&'.time().'"><li class="nearbyChats">');
-                                        echo $chat['Chat_title'];
-                                        echo('</li></a>');
-                                        ++$count;
-                                    }
-                                }else{
-                                    $status = false;
-                                }
-                            }
-                            if($count == 0){
-                                echo('<br /><br /><small>Either you are in all of the nearby chatrooms or there isn\'t anything going on nearby. <br /><br />You should be a trend setter and create a room today!</small>');
-                            }
-                        ?>
-                    </ul>
+
+                        <!-- data goes here-->
+                
                 </div>
             </div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://code.google.com/apis/gears/gears_init.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/geo.js?id=1" type="text/javascript" charset="utf-8"></script>
+    <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
+
     <script>
+        $('a').click(function (e) {
+            // custom handling here
+            e.preventDefault();
+        });
+
+        $(".logoutform").submit(function(e) {
+            e.preventDefault();
+        });
+        function deletecookies(){
+            delCookie();
+        }
         var latitude, longitude;
+        goHome();
         $(document).ready(function(){
             
             if(geo_position_js.init()){
@@ -166,7 +121,67 @@ error_reporting(-1);
                 }
     
           });
-     }
+        }
+        
+        function radiusScrollBar(){
+            alert('changing user radius');
+        }
+        
+        function userSettings() {
+            /*
+            $("#simon .1").replaceWith(function(){
+                return $("<p class='3'>hello im info1</p>");
+            }); 
+        
+            $("#button").replaceWith(function(){
+                return $("<p id='button1'><a href='#'>button1</a> </p>");
+            });
+            */
+            alert('usersettings page');
+        }
+        
+        function goHome(){
+            $.ajax({
+                url: 'util/getrooms.php',
+                success:function(html) {
+                    $('.chatlist').html(html); // display data
+                }
+            });
+        }
+        
+        function loadCreateChatroom() {
+            $.ajax({
+                url: 'util/createChatroom.php',
+                success:function(html) {
+                    $('.chatlist').html(html); // display data
+                }
+            });
+        }
+    
+        function createChatroom(){
+            var user = <?php echo($user['User_id']); ?>;
+            var lat = <?php echo($user['Latitude']); ?>;
+            var long = <?php echo($user['Longitude']); ?>;
+            var title = createChat.title.value;
+            var description = createChat.description.value;
+            if (title == '' || description == '') {
+                return;
+            }
+            var session_id = '<?php echo($_COOKIE['session_id']); ?>';
+            $.ajax({
+                url: 'http://54.172.35.180:8080/api/chatroom',
+                type: "POST",
+                data:{room_admin:user, latitude:lat, longitude:long, chat_title:title, chat_dscrpn:description, session_id:session_id},
+                dataType: "JSON",
+                success:function(html) {
+                    if (html['success'] == true) {
+                        goHome();
+                    }else{
+                        $( '.chatlist' ).append( "</br> Failed to create chatroom, try again" );
+                    }
+                }
+            });
+        }
     </script>
 </body>
     
