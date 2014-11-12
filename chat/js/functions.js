@@ -2,6 +2,18 @@
  * Created by jlkegley on 11/10/2014.
  */
 
+function handle_errors(error) {
+    // error handling here
+}
+function handle_geolocation_query(position){
+    latitude = (position.coords.latitude);
+    longitude = (position.coords.longitude);
+    onPositionReady();
+}
+function onPositionReady() {
+    updateLocation(latitude, longitude);
+}
+
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -44,7 +56,6 @@ function userLogin(uemail, upassword){
         dataType: "JSON",
         success:function(html) {
             if (html['success'] == true) {
-
                 setCookie('ID', html['user_id'], 1);
                 setCookie('session_id', html['session_id'], 1);
                 window.location.href = "profile.php";
@@ -96,4 +107,60 @@ function createChatroom(user, lat, long, title, description, session_id){
             }
         }
     });
+}
+
+//http://maps.googleapis.com/maps/api/geocode/json?latlng=".$json_data['Latitude'].",".$json_data['Longitude']."&sensor=true"
+function getUserProfile(user, session_id){
+    $.ajax({
+        url: 'http://54.172.35.180:8080/api/users/'+ user + '/' + session_id,
+        type: "GET",
+        success:function(html) {
+            if(html['User_id'] == undefined){
+                alert('We encountered an error, please try logging in again');
+                userLogout();
+                window.location.href = "/chat/";
+            }else {
+                $.ajax({
+                    url: 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + html['Latitude'] + ',' + html['Longitude'] + '&sensor=true',
+                    type: "GET",
+                    success:function(locationData) {
+                        locationData = locationData['results'];
+                        locationData = locationData[1];
+                        locationData = locationData['formatted_address'];
+                        html['location'] = JSON.stringify(locationData);
+
+                        loadUserProfile(html);
+                    }
+                });
+            }
+        }
+    });
+}
+function loadUserProfile(userInfo){
+    var userProfile = document.getElementById('userDisplayName');
+    var userProfile = document.getElementById('userEmail');
+    var userProfile = document.getElementById('userLocation');
+    var userProfile = document.getElementById('userTestingInformation');
+    var display = userInfo['DisplayName'];//WHAT?
+    var ID = userInfo['User_id'];
+    var email = userInfo['Email_id'];
+    var location = userInfo['location'];
+    latitude = userInfo['Latitude'];
+    longitude = userInfo['Longitude'];
+    userDisplayName.innerHTML = 'WELCOME, ' + display.toUpperCase();
+    userEmail.innerHTML = email;
+    userLocation.innerHTML = 'Location: ' + location;
+    userTestingInformation.innerHTML = 'ID: ' + ID + '<br /> Session: ' + getCookie('session_id');
+    return;
+}
+
+//CREATING A CHATROOM, Calls the Ajax function to post a chatroom
+function createChatroomLocal() {
+    var title = createChat.title.value;
+    var description = createChat.description.value;
+    if (title == '' || description == '') {
+        return false;
+    }
+    var result = createChatroom(getCookie('ID'), latitude, longitude, title, description, getCookie('session_id'));
+    return result;
 }

@@ -6,7 +6,7 @@
     if(!isset($_COOKIE['ID'])){
         header("Location: index.html");
     }
-    $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
+//    $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
 ?>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,15 +28,17 @@
                 PROFILE
             </div>
             <div class="content">
-                <img  class="imageProfile" src="http://www.pd4pic.com/images/flat-user-theme-action-icon.png" alt="Location">
-                <h3>WELCOME, <?php echo strtoupper($user['DisplayName']); ?></h3>
-                <p><?php echo $user['Email_id']; ?></p>
-                <p>Location: <?php echo $user['address']; ?>
-                <br/><br/>
-                ID: <i><?php echo $_COOKIE['ID']; ?></i> <br />
-                SESSION: <i><?php echo $_COOKIE['session_id']; ?></i>
-                </p>
+                <img  class="imageProfile" src="img/user.png" alt="Location">
+                <h3 id="userDisplayName"></h3>
+                <p id="userEmail">
 
+                </p>
+                <p id="userLocation">
+
+                </p>
+                <p id="userTestingInformation">
+
+                </p>
             </div>
             <form class="logoutform">
                 <button class="logoutbtn" onclick='userLogout()'>Logout</button>
@@ -49,7 +51,7 @@
             </div>
             <div class="menubar">
                 <img onclick="goHome()" class="menuIcon" src="img/home.png" alt="Home" />
-                <img onclick="loadCreateChatroom()" class="menuIcon" src="img/chatplus.png" alt="Create Chat Room" />
+                <img onclick="loadChatroomDiv()" class="menuIcon" src="img/chatplus.png" alt="Create Chat Room" />
                 <img onclick="userSettings()" class="menuIcon" src="img/settings.png" alt="User Settings" />
             </div>
             <div class="content">
@@ -70,16 +72,17 @@
             // custom handling here
             e.preventDefault();
         });
-
         $(".logoutform").submit(function(e) {
             e.preventDefault();
         });
         var latitude, longitude;
-        goHome();
         $(document).ready(function(){
+            goHome();
             if(getCookie('ID') == ''){
                 window.location.href = "index.html";
             }
+
+            //getting new position.
             if(geo_position_js.init()){
                     geo_position_js.getCurrentPosition(handle_geolocation_query,handle_errors,{enableHighAccuracy:true});
             }
@@ -90,21 +93,9 @@
                     alert('Device probably not ready.');
                 }
             }
-    
-    
         });
-        function handle_errors(error) {  
-            // error handling here
-        }
-        function handle_geolocation_query(position){  
-            latitude = (position.coords.latitude);
-            longitude = (position.coords.longitude); 
-            onPositionReady();
-        }
-        function onPositionReady() {
-            updateLocation(latitude, longitude);
-        }
-        
+        getUserProfile(getCookie('ID'), getCookie('session_id'));
+
         function radiusScrollBar(){
             alert('changing user radius');
         }
@@ -112,7 +103,9 @@
         function userSettings() {
             alert('usersettings page');
         }
-        
+
+
+        //Home Button Function, also used when page loads
         function goHome(){
             $.ajax({
                 url: 'util/getrooms.php',
@@ -121,8 +114,8 @@
                 }
             });
         }
-        
-        function loadCreateChatroom() {
+        //loads the chatroom div
+        function loadChatroomDiv() {
             $.ajax({
                 url: 'util/createChatroom.html',
                 success:function(html) {
@@ -133,15 +126,8 @@
             });
         }
 
-        function createChatroomLocal(){
-            var title = createChat.title.value;
-            var description = createChat.description.value;
-            if (title == '' || description == '') {
-                return false;
-            }
-            var result = createChatroom(<?php echo($user['User_id']); ?>, <?php echo($user['Latitude']); ?>, <?php echo($user['Longitude']); ?>, title, description, '<?php echo($_COOKIE['session_id']); ?>');
-            return result;
-        }
+
+
 
     </script>
 </body>
