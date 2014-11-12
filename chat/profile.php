@@ -39,7 +39,7 @@
 
             </div>
             <form class="logoutform">
-                <button class="logoutbtn" onclick='deletecookies()'>Logout</button>
+                <button class="logoutbtn" onclick='userLogout()'>Logout</button>
             </form>
         </div>
         
@@ -74,9 +74,6 @@
         $(".logoutform").submit(function(e) {
             e.preventDefault();
         });
-        function deletecookies(){
-            delCookie();
-        }
         var latitude, longitude;
         goHome();
         $(document).ready(function(){
@@ -113,15 +110,6 @@
         }
         
         function userSettings() {
-            /*
-            $("#simon .1").replaceWith(function(){
-                return $("<p class='3'>hello im info1</p>");
-            }); 
-        
-            $("#button").replaceWith(function(){
-                return $("<p id='button1'><a href='#'>button1</a> </p>");
-            });
-            */
             alert('usersettings page');
         }
         
@@ -146,16 +134,12 @@
         }
 
         function createChatroomLocal(){
-            var user = <?php echo($user['User_id']); ?>;
-            var lat = <?php echo($user['Latitude']); ?>;
-            var long = <?php echo($user['Longitude']); ?>;
             var title = createChat.title.value;
             var description = createChat.description.value;
-            var session_id = '<?php echo($_COOKIE['session_id']); ?>';
             if (title == '' || description == '') {
-                return;
+                return false;
             }
-            var result = createChatroom(user, lat, long, title, description, session_id);
+            var result = createChatroom(<?php echo($user['User_id']); ?>, <?php echo($user['Latitude']); ?>, <?php echo($user['Longitude']); ?>, title, description, '<?php echo($_COOKIE['session_id']); ?>');
             return result;
         }
 

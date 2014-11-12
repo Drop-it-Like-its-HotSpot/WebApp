@@ -30,6 +30,9 @@ function delCookie() {
     window.location.href = "profile.php";
 }
 
+function userLogout(){
+    delCookie();
+}
 
 function userLogin(uemail, upassword){
     var email_id = uemail;
