@@ -27,15 +27,15 @@
 
     $(document).ready(function(){
         if(getCookie('ID') == ''){
-            alert('TRUE');
+            //no cookie set
         }else{
             window.location.href = "profile.php";
         }
 
     });
     function homepageLogin(){
-        alert(loginform.username.value);
-        alert(loginform.password.value);
+        //alert(loginform.username.value);
+        //alert(loginform.password.value);
         userLogin(loginform.username.value, loginform.password.value);
     }
 </script>

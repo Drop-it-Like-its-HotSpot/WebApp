@@ -13,7 +13,7 @@
 <body>
    
     <div class="header">
-        <a href="/chat/"><img class="thelogo" src="img/logo.png"></a><br />
+        <a href="/chat/profile.php"><img class="thelogo" src="img/logo.png"></a><br />
     </div>
     
 
@@ -44,7 +44,7 @@
                 if(!$ans){
                     ?><button class="joinRoom" type="submit" onclick="joinRoom()">Join Room</button><?php
                 }else{
-                    ?><button class="leaveRoom" type="submit" onclick="leaveRoom()">Leave Room</button><?php
+                    ?><button class="leaveRoom" type="submit" onclick="leaveRoomLocal(<?php echo($_GET['rid']);?>, getCookie('ID'), getCookie('session_id'))">Leave Room</button><?php
                 }
                 
             ?>
@@ -92,6 +92,7 @@
     </footer>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
     <script>
     $("#messageform").submit(function(e) {
         e.preventDefault();
@@ -126,20 +127,12 @@
           });
           location.reload();
      }
-      function leaveRoom() {
+    //TODO: Talk to Vatsal about this
+    function leaveRoomLocal(room_id, user_id, session_id) {
         if(!confirm('Are you sure you want to leave this room?')){
             return true;
         }else{
-          $.ajax({
-                type: "POST", 
-                url: 'util/leavejoin.php',
-                data:{action:'leave', room_id:'<?php echo $_GET['rid']; ?>', user_id:'<?php echo $_COOKIE['ID']; ?>', session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-                success:function(html) {
-                    window.location.href = "/chat/";
-                }
-    
-          });
-          return true;
+            leaveRoom(room_id, user_id, session_id);
         }
      }
 
@@ -157,21 +150,11 @@
                 success:function(html) {
                     getNewMessages();
                 }
-    
           });
-        
-        
     }
     
     var $cont = $('.contentChat');
     $cont[0].scrollTop = $cont[0].scrollHeight;
-    /*
-    $('.submitmessage').keyup(function(e) {
-        if (e.keyCode == 13) {
-            $cont[0].scrollTop = $cont[0].scrollHeight;
-        }
-    })
-    */
     var oldhtml;
     var interval = 1000;  // 1000 = 1 second, 3000 = 3 seconds
     function getNewMessages() {

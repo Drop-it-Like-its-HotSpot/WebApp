@@ -1,17 +1,12 @@
 <?php
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(-1);
-    //if the cookies aren't set, the user isn't logged int
-    if(!isset($_COOKIE['session_id'])){
-        header( 'Location: index.html' );
-    }else {
-        include('util/functions.php');
-        $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
-        if(!isset($user['User_id'])){
-            header( 'Location: index.html' );
-        }
+    ini_set('display_errors',1);
+    ini_set('display_startup_errors',1);
+    error_reporting(-1);
+    include('util/functions.php');
+    if(!isset($_COOKIE['ID'])){
+        header("Location: index.html");
     }
+    $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
 ?>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,7 +80,9 @@ error_reporting(-1);
         var latitude, longitude;
         goHome();
         $(document).ready(function(){
-            
+            if(getCookie('ID') == ''){
+                window.location.href = "index.html";
+            }
             if(geo_position_js.init()){
                     geo_position_js.getCurrentPosition(handle_geolocation_query,handle_errors,{enableHighAccuracy:true});
             }
@@ -109,18 +106,6 @@ error_reporting(-1);
         }
         function onPositionReady() {
             updateLocation(latitude, longitude);
-        }
-        
-        function updateLocation(latitude, longitude) {
-          $.ajax({
-                type: "POST", 
-                url: 'util/functions.php',
-                data:{action:'location', lat:latitude, long:longitude, session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-                success:function(html) {
-                    //do something to update
-                }
-    
-          });
         }
         
         function radiusScrollBar(){
@@ -151,37 +136,29 @@ error_reporting(-1);
         
         function loadCreateChatroom() {
             $.ajax({
-                url: 'util/createChatroom.php',
+                url: 'util/createChatroom.html',
                 success:function(html) {
-                    $('.chatlist').html(html); // display data
+                    $('.chatlist').html(
+                        '<form method="post" id="createChat" onsubmit="return false;"> <input class="topInput" type="" name="title" placeholder="Title" value="" maxlength="30" required><br/><input class="" type="" name="description" placeholder="Short Description" value="" maxlength="30" required><br/><button type="submit" onclick="createChatroomLocal()" >Create Room</button></form>'
+                    ); // display data
                 }
             });
         }
-    
-        function createChatroom(){
+
+        function createChatroomLocal(){
             var user = <?php echo($user['User_id']); ?>;
             var lat = <?php echo($user['Latitude']); ?>;
             var long = <?php echo($user['Longitude']); ?>;
             var title = createChat.title.value;
             var description = createChat.description.value;
+            var session_id = '<?php echo($_COOKIE['session_id']); ?>';
             if (title == '' || description == '') {
                 return;
             }
-            var session_id = '<?php echo($_COOKIE['session_id']); ?>';
-            $.ajax({
-                url: 'http://54.172.35.180:8080/api/chatroom',
-                type: "POST",
-                data:{room_admin:user, latitude:lat, longitude:long, chat_title:title, chat_dscrpn:description, session_id:session_id},
-                dataType: "JSON",
-                success:function(html) {
-                    if (html['success'] == true) {
-                        goHome();
-                    }else{
-                        $( '.chatlist' ).append( "</br> Failed to create chatroom, try again" );
-                    }
-                }
-            });
+            var result = createChatroom(user, lat, long, title, description, session_id);
+            return result;
         }
+
     </script>
 </body>
     

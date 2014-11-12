@@ -16,7 +16,7 @@ function getCookie(cname) {
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    d.setTime(d.getTime() + (exdays*60*60*1000));//add * 24 for one day
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
 }
@@ -41,13 +41,55 @@ function userLogin(uemail, upassword){
         dataType: "JSON",
         success:function(html) {
             if (html['success'] == true) {
-                alert(JSON.stringify(html));
+
                 setCookie('ID', html['user_id'], 1);
                 setCookie('session_id', html['session_id'], 1);
                 window.location.href = "profile.php";
             }else{
-                alert(JSON.stringify(html));
                 alert('Could not log you in, check your username/password');
+            }
+        }
+    });
+}
+
+
+function updateLocation(latitude, longitude) {
+    $.ajax({
+        type: "POST",
+        url: 'http://54.172.35.180:8080/api/updatelocation',
+        data:{lat:latitude, long:longitude, session_id:getCookie('session_id') },
+        dataType: "JSON",
+        success:function(html) {
+            return html;
+        }
+
+    });
+}
+
+function leaveRoom(room_id, user_id, session_id) {
+    $.ajax({
+        crossDomain: true,
+        type: "DELETE",
+        url: 'http://54.172.35.180:8080/api/chatroomusers/',
+        data: {room_id: room_id, user_id: user_id, session_id: session_id},
+        success: function (html) {
+            window.location.href = "/chat/";
+        }
+    });
+}
+
+function createChatroom(user, lat, long, title, description, session_id){
+    $.ajax({
+        url: 'http://54.172.35.180:8080/api/chatroom',
+        type: "POST",
+        data:{room_admin:user, latitude:lat, longitude:long, chat_title:title, chat_dscrpn:description, session_id:session_id},
+        dataType: "JSON",
+        success:function(html) {
+            if (html['success'] == true) {
+                goHome();
+                return true;
+            }else{
+                return false;
             }
         }
     });
