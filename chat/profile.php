@@ -51,11 +51,12 @@
             </div>
             <div class="menubar">
                 <img onclick="goHome()" class="menuIcon" src="img/home.png" alt="Home" />
+                <img onclick="getMap()" class="menuIcon" src="img/map.png" alt="Map" />
                 <img onclick="loadChatroomDiv()" class="menuIcon" src="img/chatplus.png" alt="Create Chat Room" />
                 <img onclick="userSettings()" class="menuIcon" src="img/settings.png" alt="User Settings" />
             </div>
             <div class="content">
-                <div class="chatlist">
+                <div class="chatlist" id="chatlist">
 
                         <!-- data goes here-->
                 
@@ -66,8 +67,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="js/geo.js?id=1" type="text/javascript" charset="utf-8"></script>
     <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/map.js" type="text/javascript" charset="utf-8"></script>
 
     <script>
+        var roomC = false;
         $('a').click(function (e) {
             // custom handling here
             e.preventDefault();
@@ -113,17 +116,13 @@
                     $('.chatlist').html(html); // display data
                 }
             });
+            roomC = false;
         }
         //loads the chatroom div
         function loadChatroomDiv() {
-            $.ajax({
-                url: 'util/createChatroom.html',
-                success:function(html) {
-                    $('.chatlist').html(
-                        '<form method="post" id="createChat" onsubmit="return false;"> <input class="topInput" type="" name="title" placeholder="Title" value="" maxlength="30" required><br/><input class="" type="" name="description" placeholder="Short Description" value="" maxlength="30" required><br/><button type="submit" onclick="createChatroomLocal()" >Create Room</button></form>'
-                    ); // display data
-                }
-            });
+            $('.chatlist').html(
+                '<form method="post" id="createChat" onsubmit="return false;"> <input class="topInput" type="" name="title" placeholder="Title" value="" maxlength="30" required><br/><input class="description" type="" name="description" placeholder="Short Description" value="" maxlength="30" required><br/><button type="submit" onclick="createChatroomLocal()" >Create Room</button></form>'
+            ); // display data
         }
 
 

@@ -4,18 +4,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <link href="css/login.css" rel="stylesheet">
 <div class="parent">
-  <a href="/chat/"><img class="thelogo" src="img/logo.png"></a><br />  
+  <a href="/chat/"><img class="thelogo" src="img/logo.png"></a><br />
     <img class="titleImg" src="../img/Title.png">
     <div id="login">
-      <form method="post" id="regform">
+      <form id="regform">
         <input id="lat" name="lat" value="0" hidden/>
         <input id="long" name="long" value="0" hidden/>
-        <input class="topInput" type="" name="email" placeholder="Email" value=""><br/>
+        <input class="topInput" type="email" name="email" placeholder="Email" value=""><br/>
         <input class="" type="" name="displayname" placeholder="Display" value=""><br/>
         <input id="password" name="password" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 6 characters' : ''); if(this.checkValidity()) form.password_two.pattern = this.value;" placeholder="Password" required></br>
         <input id="password_two" name="password_two" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');" placeholder="Verify Password" required> <br/>
         <button type="submit" onclick="registerUser()" >Sign In</button>
-  
+
       </form>
     </div>
 </div>
@@ -31,7 +31,7 @@
     var latitude, longitude;
 
     $(document).ready(function(){
-        
+
         if(geo_position_js.init()){
                 geo_position_js.getCurrentPosition(handle_geolocation_query,handle_errors,{enableHighAccuracy:true});
         }
@@ -44,12 +44,12 @@
 	    }
 
     });
-    function handle_errors(error) {  
+    function handle_errors(error) {
         // error handling here
     }
-    function handle_geolocation_query(position){  
+    function handle_geolocation_query(position){
         latitude = (position.coords.latitude);
-        longitude = (position.coords.longitude); 
+        longitude = (position.coords.longitude);
         onPositionReady();
     }
     function onPositionReady() {
@@ -63,27 +63,30 @@
         var latitude = regform.lat.value;
         var longitude = regform.long.value;
         var radius = 15;
-
-
         if (latitude == 0 || longitude == 0) {
             latitude = 29.6516340;
             longitude = -82.3248260;
         }
+        if(password.length < 6){
+            return false;
+        } else if(!checkIfEmailInString(email_id)){
+            return false;
+        }else{
+            $.ajax({
+                url: 'http://54.172.35.180:8080/api/users/',
+                type: "POST",
+                data:{email_id:email_id, displayname:displayname, password:password, latitude:latitude, longitude:longitude, radius:radius},
+                dataType: "JSON",
+                success:function(html) {
+                    if (html['success'] == true) {
+                        userLogin(html['Email_id'], password);
 
-        $.ajax({
-            url: 'http://54.172.35.180:8080/api/users/',
-            type: "POST",
-            data:{email_id:email_id, displayname:displayname, password:password, latitude:latitude, longitude:longitude, radius:radius},
-            dataType: "JSON",
-            success:function(html) {
-                if (html['success'] == true) {
-                    userLogin(html['Email_id'], password);
-
-                }else{
-                    alert("Failed to register, try a different email/password" );
+                    }else{
+                        alert("Failed to register, try a different email/password" );
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 </script>

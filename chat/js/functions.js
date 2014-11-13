@@ -1,7 +1,7 @@
 /**
  * Created by jlkegley on 11/10/2014.
  */
-
+//#############LOCATION HANDLING#################//
 function handle_errors(error) {
     // error handling here
 }
@@ -12,6 +12,28 @@ function handle_geolocation_query(position){
 }
 function onPositionReady() {
     updateLocation(latitude, longitude);
+}
+
+function updateLocation(latitude, longitude) {
+    $.ajax({
+        type: "POST",
+        url: 'http://54.172.35.180:8080/api/updatelocation',
+        data:{lat:latitude, long:longitude, session_id:getCookie('session_id') },
+        dataType: "JSON",
+        success:function(html) {
+            return html;
+        }
+
+    });
+}
+//##################END LOCATION HANDLING########################//
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+        function(m,key,value) {
+            vars[key] = value;
+        });
+    return vars;
 }
 
 function getCookie(cname) {
@@ -41,7 +63,10 @@ function delCookie() {
     document.cookie = 'session_id' + "=" + "NULL" + "; " + expires;
     window.location.href = "profile.php";
 }
-
+function checkIfEmailInString(text) {
+    var re = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
+    return re.test(text);
+}
 function userLogout(){
     delCookie();
 }
@@ -66,20 +91,6 @@ function userLogin(uemail, upassword){
     });
 }
 
-
-function updateLocation(latitude, longitude) {
-    $.ajax({
-        type: "POST",
-        url: 'http://54.172.35.180:8080/api/updatelocation',
-        data:{lat:latitude, long:longitude, session_id:getCookie('session_id') },
-        dataType: "JSON",
-        success:function(html) {
-            return html;
-        }
-
-    });
-}
-
 function leaveRoom(room_id, user_id, session_id) {
     $.ajax({
         crossDomain: true,
@@ -87,24 +98,7 @@ function leaveRoom(room_id, user_id, session_id) {
         url: 'http://54.172.35.180:8080/api/chatroomusers/',
         data: {room_id: room_id, user_id: user_id, session_id: session_id},
         success: function (html) {
-            window.location.href = "/chat/";
-        }
-    });
-}
-
-function createChatroom(user, lat, long, title, description, session_id){
-    $.ajax({
-        url: 'http://54.172.35.180:8080/api/chatroom',
-        type: "POST",
-        data:{room_admin:user, latitude:lat, longitude:long, chat_title:title, chat_dscrpn:description, session_id:session_id},
-        dataType: "JSON",
-        success:function(html) {
-            if (html['success'] == true) {
-                goHome();
-                return true;
-            }else{
-                return false;
-            }
+            window.location.href = "/chat/profile.php";
         }
     });
 }
@@ -156,11 +150,52 @@ function loadUserProfile(userInfo){
 
 //CREATING A CHATROOM, Calls the Ajax function to post a chatroom
 function createChatroomLocal() {
-    var title = createChat.title.value;
-    var description = createChat.description.value;
+    var title = stripHTML(createChat.title.value);
+    var description = stripHTML(createChat.description.value);
+    //CHECKING PROPER TITLE AND DESCRIPTION INFORMATION
+    if(roomC){ return false };
+    var testString = title.replace(/^\s+/, '').replace(/\s+$/, '');
+    if (testString === '') {
+        alert("Your chatroom title should be useful! Not only spaces or blank!");
+        return false;
+    } else {
+        // text has real content, now free of leading/trailing whitespace
+    }
     if (title == '' || description == '') {
         return false;
     }
+    testString = description.replace(/^\s+/, '').replace(/\s+$/, '');
+    if (testString === '') {
+        alert("What is your chatroom all about?");
+        return false;
+    } else {
+        // text has real content, now free of leading/trailing whitespace
+    }
+    //IF ALL CHECKS OUT, SEND TO CREATE ROOM!
     var result = createChatroom(getCookie('ID'), latitude, longitude, title, description, getCookie('session_id'));
+    roomC = true;
     return result;
+}
+
+function createChatroom(user, lat, long, title, description, session_id){
+
+    $.ajax({
+        url: 'http://54.172.35.180:8080/api/chatroom',
+        type: "POST",
+        data:{room_admin:user, latitude:lat, longitude:long, chat_title:title, chat_dscrpn:description, session_id:session_id},
+        dataType: "JSON",
+        success:function(html) {
+            if (html['success'] == true) {
+                goHome();
+                return true;
+            }else{
+                return false;
+            }
+        }
+    });
+}
+
+function stripHTML(text){
+    var regex = /(<([^>]+)>)/ig;
+    return text.replace(regex, "");
 }

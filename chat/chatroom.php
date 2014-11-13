@@ -44,7 +44,7 @@
                 if(!$ans){
                     ?><button class="joinRoom" type="submit" onclick="joinRoom()">Join Room</button><?php
                 }else{
-                    ?><button class="leaveRoom" type="submit" onclick="leaveRoomLocal(<?php echo($_GET['rid']);?>, getCookie('ID'), getCookie('session_id'))">Leave Room</button><?php
+                    ?><button class="leaveRoom" type="submit" onclick="leaveRoomLocal(getUrlVars()['rid'], getCookie('ID'), getCookie('session_id'))">Leave Room</button><?php
                 }
                 
             ?>
@@ -93,101 +93,104 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/chatroomFunctions.js" type="text/javascript" charset="utf-8"></script>
     <script>
-    $("#messageform").submit(function(e) {
-        e.preventDefault();
-    });
-    function deleteRoom(){
-        if(confirm('Are you sure you want to delete this room?')){
-            $.ajax({
-                type: "DELETE", 
-                url: 'http://54.172.35.180:8080/api/chatroom/<?php echo $_GET['rid'];?>',
-                data:{session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-                success:function(html) {
-                    alert(html);
-                }
-    
-          });
-            
-            
-            return true;
-        }else{
-            return false;
-        }
-    }
-    function joinRoom() {
-          $.ajax({
-                type: "POST", 
-                url: 'util/leavejoin.php',
-                data:{action:'join', room_id:'<?php echo $_GET['rid']; ?>', user_id:'<?php echo $_COOKIE['ID']; ?>', session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-                success:function(html) {
-                    window.setTimeout(function(){location.reload()},20)
-                }
-    
-          });
-          location.reload();
-     }
-    //TODO: Talk to Vatsal about this
-    function leaveRoomLocal(room_id, user_id, session_id) {
-        if(!confirm('Are you sure you want to leave this room?')){
-            return true;
-        }else{
-            leaveRoom(room_id, user_id, session_id);
-        }
-     }
+        var userID = getCookie('ID');
+        var userAdminID;
+        var roomID = getUrlVars()['rid'];
+        var session_id = getCookie('session_id');
 
-    function submitChat() {
-        var message = messageform.message.value;
-        if ( message == 'Type Your Message & Press Enter' ||  message == '') {
-            alert('You didn\'t type a message! What are you thinking?');
-            return;
-        }
-        messageform.message.value = '';
-        $.ajax({
-                type: "POST", 
-                url: 'util/chatFunctions.php',
-                data:{action:'sendMessage', room_id:'<?php echo $_GET['rid']; ?>', user_id:'<?php echo $_COOKIE['ID']; ?>', message:message, session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-                success:function(html) {
-                    getNewMessages();
-                }
-          });
-    }
-    
-    var $cont = $('.contentChat');
-    $cont[0].scrollTop = $cont[0].scrollHeight;
-    var oldhtml;
-    var interval = 1000;  // 1000 = 1 second, 3000 = 3 seconds
-    function getNewMessages() {
-        $.ajax({
-            url: 'util/messages.php',
-            data:{action:'leave', rid:'<?php echo $_GET['rid']; ?>', user_id:'<?php echo $_COOKIE['ID']; ?>', session_id:'<?php echo $_COOKIE['session_id']; ?>' },
-            success:function(html) {
-                    status = shouldIUpdate(html);
-                    if (status == 'true') {
-                        $('.chatlist').html(html); // display data
-                        $cont[0].scrollTop = $cont[0].scrollHeight;
-                    }else{
-                        //no update
-                    }
-            },
-            complete: function (data) {
-                // Schedule the next
-                setTimeout(getNewMessages, interval);
-            }
+        $("#messageform").submit(function(e) {
+            e.preventDefault();
         });
-    }
-    function shouldIUpdate(html){
-        if (this.oldhtml == html) {
-            return 'false';
-        }else{
-            this.oldhtml = html;
-            return 'true';
+        function deleteRoom(){
+            if(confirm('Are you sure you want to delete this room?')){
+                $.ajax({
+                    type: "DELETE",
+                    url: 'http://54.172.35.180:8080/api/chatroom/<?php echo $_GET['rid'];?>',
+                    data:{session_id:'<?php echo $_COOKIE['session_id']; ?>' },
+                    success:function(html) {
+                        window.location.href = "profile.php";
+                    }
+                });
+                return true;
+            }else{
+                return false;
+            }
         }
-    }
-    
+        function joinRoom() {
+              $.ajax({
+                    type: "POST",
+                    url: 'util/leavejoin.php',
+                    data:{action:'join', room_id: roomID, user_id: userID, session_id: session_id },
+                    success:function(html) {
+                        window.setTimeout(function(){location.reload()},20)
+                    }
+              });
+              location.reload();
+         }
+        //TODO: Talk to Vatsal about this
+        function leaveRoomLocal(room_id, user_id, session_id) {
+            if(!confirm('Are you sure you want to leave this room?')){
+                return true;
+            }else{
+                leaveRoom(room_id, user_id, session_id);
+            }
+         }
 
-    
-    setTimeout(getNewMessages, interval);
+        function submitChat() {
+            var message = messageform.message.value;
+            if ( message == 'Type Your Message & Press Enter' ||  message == '') {
+                alert('You didn\'t type a message! What are you thinking?');
+                return;
+            }
+            messageform.message.value = '';
+            $.ajax({
+                    type: "POST",
+                    url: 'util/chatFunctions.php',
+                    data:{action:'sendMessage', room_id:roomID, user_id: userID, message:message, session_id:session_id },
+                    success:function(html) {
+                        getNewMessages();
+                    }
+              });
+        }
+
+        var $cont = $('.contentChat');
+        $cont[0].scrollTop = $cont[0].scrollHeight;
+        var oldhtml;
+        var interval = 1000;  // 1000 = 1 second, 3000 = 3 seconds
+        function getNewMessages() {
+            $.ajax({
+                url: 'util/messages.php',
+                data:{action:'leave', rid: roomID, user_id: userID, session_id: session_id },
+                success:function(html) {
+                        status = shouldIUpdate(html);
+                        if (status == 'true') {
+                            $('.chatlist').html(html); // display data
+                            $cont[0].scrollTop = $cont[0].scrollHeight;
+                        }else{
+                            //no update
+                        }
+                },
+                complete: function (data) {
+                    // Schedule the next
+                    setTimeout(getNewMessages, interval);
+                }
+            });
+        }
+        function shouldIUpdate(html){
+            if (this.oldhtml == html) {
+                return 'false';
+            }else{
+                this.oldhtml = html;
+                return 'true';
+            }
+        }
+
+
+
+        setTimeout(getNewMessages, interval);
     </script>
 </body>
 </html>

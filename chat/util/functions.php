@@ -21,13 +21,6 @@
         return $json_data;
     }
 
-    if(isset($_POST['action'])){
-        if($_POST['action'] == 'location'){
-            var_dump($_POST);
-            updateLocation($_POST['lat'], $_POST['long'], $_POST['session_id']);
-        }
-    }
-    
 
     
 ?>
