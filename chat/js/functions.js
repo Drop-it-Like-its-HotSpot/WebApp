@@ -6,22 +6,22 @@ function handle_errors(error) {
     // error handling here
 }
 function handle_geolocation_query(position){
-    latitude = (position.coords.latitude);
-    longitude = (position.coords.longitude);
-    onPositionReady();
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    onPositionReady(latitude, longitude);
 }
-function onPositionReady() {
+function onPositionReady(latitude, longitude) {
     updateLocation(latitude, longitude);
 }
 
 function updateLocation(latitude, longitude) {
+    var session_id = getCookie('session_id');
     $.ajax({
         type: "POST",
         url: 'http://54.172.35.180:8080/api/updatelocation',
-        data:{lat:latitude, long:longitude, session_id:getCookie('session_id') },
+        data:{latitude:latitude, longitude:longitude, session_id:session_id },
         dataType: "JSON",
         success:function(html) {
-            return html;
         }
 
     });
@@ -91,17 +91,6 @@ function userLogin(uemail, upassword){
     });
 }
 
-function leaveRoom(room_id, user_id, session_id) {
-    $.ajax({
-        crossDomain: true,
-        type: "DELETE",
-        url: 'http://54.172.35.180:8080/api/chatroomusers/',
-        data: {room_id: room_id, user_id: user_id, session_id: session_id},
-        success: function (html) {
-            window.location.href = "/chat/profile.php";
-        }
-    });
-}
 
 //http://maps.googleapis.com/maps/api/geocode/json?latlng=".$json_data['Latitude'].",".$json_data['Longitude']."&sensor=true"
 function getUserProfile(user, session_id){
@@ -130,11 +119,9 @@ function getUserProfile(user, session_id){
         }
     });
 }
+
+
 function loadUserProfile(userInfo){
-    var userProfile = document.getElementById('userDisplayName');
-    var userProfile = document.getElementById('userEmail');
-    var userProfile = document.getElementById('userLocation');
-    var userProfile = document.getElementById('userTestingInformation');
     var display = userInfo['DisplayName'];//WHAT?
     var ID = userInfo['User_id'];
     var email = userInfo['Email_id'];
@@ -174,6 +161,9 @@ function createChatroomLocal() {
     //IF ALL CHECKS OUT, SEND TO CREATE ROOM!
     var result = createChatroom(getCookie('ID'), latitude, longitude, title, description, getCookie('session_id'));
     roomC = true;
+    $('.chatlist').html(
+        '<div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'
+    ); // display data
     return result;
 }
 
