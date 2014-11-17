@@ -1,13 +1,3 @@
-<?php
-    ini_set('display_errors',1);
-    ini_set('display_startup_errors',1);
-    error_reporting(-1);
-    include('util/functions.php');
-    if(!isset($_COOKIE['ID'])){
-        header("Location: index.html");
-    }
-//    $user = userProfile($_COOKIE['ID'], $_COOKIE['session_id']);
-?>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
@@ -57,7 +47,7 @@
             </div>
             <div class="content">
                 <div class="chatlist" id="chatlist">
-
+                    <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
                         <!-- data goes here-->
                 
                 </div>
@@ -70,6 +60,13 @@
     <script src="js/map.js" type="text/javascript" charset="utf-8"></script>
 
     <script>
+
+        var userID = getCookie('ID');
+        var session_id = getCookie('session_id');
+
+        if(getCookie('session_id') == ""){
+            window.location.href = "index.html";
+        }
         var roomC = false;
         $('a').click(function (e) {
             // custom handling here
@@ -96,6 +93,7 @@
                     alert('Device probably not ready.');
                 }
             }
+            loadJoinedChats(session_id);
         });
         getUserProfile(getCookie('ID'), getCookie('session_id'));
 
@@ -110,12 +108,14 @@
 
         //Home Button Function, also used when page loads
         function goHome(){
+            /*
             $.ajax({
                 url: 'util/getrooms.php',
                 success:function(html) {
                     $('.chatlist').html(html); // display data
                 }
             });
+            */
             roomC = false;
         }
         //loads the chatroom div

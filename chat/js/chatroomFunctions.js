@@ -6,21 +6,48 @@ var interval = 2000;  // 1000 = 1 second, 3000 = 3 seconds
 
 
 function getChatroomInfo(room_id, session_id){
-
-
     $.ajax({
         url: 'http://54.172.35.180:8080/api/chatroom/' + room_id + '/' + session_id,
         type: "GET",
         dataType: "JSON",
         success:function(html) {
-            alert(JSON.stringify(html));
-
-            //populatePage(html);
+            populatePage(html);
         }
     });
 }
-function populatePage(html){
-    userAdminID = html['Admin_id'];
+
+function populatePage(info){
+    var div = document.getElementById('footer');
+    div.innerHTML = div.innerHTML;
+    //get room location
+    $.ajax({
+        url: 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + info['Latitude'] + ',' + info['Longitude'] + '&sensor=true',
+        success:function(location) {
+            var div = document.getElementById('footer');
+            location = location['results'];
+            location = location[0];
+            location = location['address_components'];
+            if(location[1] != undefined){
+                div.innerHTML = div.innerHTML + location[1]['long_name'] + ', ';
+            }
+            if(location[2] != undefined){
+                div.innerHTML = div.innerHTML + location[2]['long_name'] + ', ';
+            }
+            if(location[4] != undefined){
+                div.innerHTML = div.innerHTML + location[4]['long_name'];
+            }
+        }
+    });
+/*
+    $url = "http://maps.googleapis.com/maps/ap i/geocode/json?latlng=".$lat.",".$long."&sensor=true";
+    $json = file_get_contents($url);
+    $locationData = json_decode($json, true);
+    $result = $locationData['results'];
+    $result = $result[0];
+    //var_dump($result);
+    return $result['address_components'];
+*/
+    return;
 }
 
 
@@ -31,7 +58,7 @@ function deleteRoom(room_id, session_id){
             url: 'http://54.172.35.180:8080/api/chatroom/' + room_id,
             data:{session_id:session_id },
             success:function(html) {
-                window.location.href = "profile.php";
+                window.location.href = "profile.html";
             }
         });
         return true;
@@ -91,7 +118,7 @@ function joinRoom(room) {
     $.ajax({
         type: "POST",
         url: 'http://54.172.35.180:8080/api/chatroomusers/',
-        data:{room_id: roomID, user_id: userID, session_id: session_id },
+        data:{room_id: roomID, session_id: session_id },
         success:function(html) {
             window.setTimeout(function(){location.reload()},20)
         }
@@ -105,9 +132,9 @@ function leaveRoom(room_id, user_id, session_id) {
         crossDomain: true,
         type: "DELETE",
         url: 'http://54.172.35.180:8080/api/chatroomusers/',
-        data: {room_id: room_id, user_id: user_id, session_id: session_id},
+        data: {room_id: room_id, session_id: session_id},
         success: function (html) {
-            window.location.href = "/chat/profile.php";
+            window.location.href = "/chat/profile.html";
         }
     });
 }

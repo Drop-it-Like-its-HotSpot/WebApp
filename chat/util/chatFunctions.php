@@ -20,16 +20,7 @@ error_reporting(-1);
         $json_data = json_decode($json, true);
         return $json_data;
     }
-    //get the STRING location based on GPS data
-    function chatroomLocation($lat, $long) {
-        $url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$lat.",".$long."&sensor=true";
-        $json = file_get_contents($url);
-        $locationData = json_decode($json, true);
-        $result = $locationData['results'];
-        $result = $result[0];
-        //var_dump($result);
-        return $result['address_components'];
-    }
+
     //gets messages from a particular chatroom
     function getMessages($room_id, $session_id){
         $url = "http://54.172.35.180:8080/api/messages/room_id/".$room_id."/".$session_id;

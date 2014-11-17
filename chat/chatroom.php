@@ -76,21 +76,11 @@
         </div>
     </div>
     
-    <footer>
+    <footer id="footer">
         <br />
-        <?php $location = chatroomLocation($chatInfo['Latitude'],$chatInfo['Longitude']);
-            if(isset($location[1])){
-                echo($location[1]['long_name'].", ");
-            }
-            if(isset($location[2])){
-                echo($location[2]['long_name'].", ");
-            }
-            if(isset($location[4])){
-                echo($location[4]['long_name']);
-            }
-        ?>
+        <!--Chatroom location enters here-->
     </footer>
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/functions.js" type="text/javascript" charset="utf-8"></script>
@@ -99,6 +89,9 @@
         var userID = getCookie('ID');
         var roomID = getUrlVars()['rid'];
         var session_id = getCookie('session_id');
+        if(session_id == ""){
+            window.location.href = "index.html";
+        }
         getChatroomInfo(roomID, session_id);
         var userAdminID;
         $("#messageform").submit(function(e) {

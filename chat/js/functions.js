@@ -27,6 +27,7 @@ function updateLocation(latitude, longitude) {
     });
 }
 //##################END LOCATION HANDLING########################//
+//##################HELPER METHODS, COOKIES, URL########################//
 function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
@@ -61,12 +62,16 @@ function delCookie() {
     var expires = "expires="+d.toUTCString();
     document.cookie = 'ID' + "=" + "NULL" + "; " + expires;
     document.cookie = 'session_id' + "=" + "NULL" + "; " + expires;
-    window.location.href = "profile.php";
+    window.location.href = "profile.html";
 }
+
+//#############################################################################################
 function checkIfEmailInString(text) {
     var re = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
     return re.test(text);
 }
+
+//#######################USER LOGIN AND LOGOUT####################################
 function userLogout(){
     delCookie();
 }
@@ -83,7 +88,7 @@ function userLogin(uemail, upassword){
             if (html['success'] == true) {
                 setCookie('ID', html['user_id'], 1);
                 setCookie('session_id', html['session_id'], 1);
-                window.location.href = "profile.php";
+                window.location.href = "profile.html";
             }else{
                 alert('Could not log you in, check your username/password');
             }
@@ -91,14 +96,16 @@ function userLogin(uemail, upassword){
     });
 }
 
+//##############################################################################
 
-//http://maps.googleapis.com/maps/api/geocode/json?latlng=".$json_data['Latitude'].",".$json_data['Longitude']."&sensor=true"
+
 function getUserProfile(user, session_id){
     $.ajax({
         url: 'http://54.172.35.180:8080/api/users/'+ user + '/' + session_id,
         type: "GET",
         success:function(html) {
             if(html['User_id'] == undefined){
+                alert(JSON.stringify(html));
                 alert('We encountered an error, please try logging in again');
                 userLogout();
                 window.location.href = "/chat/";
@@ -119,7 +126,6 @@ function getUserProfile(user, session_id){
         }
     });
 }
-
 
 function loadUserProfile(userInfo){
     var display = userInfo['DisplayName'];//WHAT?
@@ -188,4 +194,77 @@ function createChatroom(user, lat, long, title, description, session_id){
 function stripHTML(text){
     var regex = /(<([^>]+)>)/ig;
     return text.replace(regex, "");
+}
+
+
+/*
+ function getNearbyChats($session_id){
+ $url = "http://54.172.35.180:8080/api/chatroom/".$session_id;
+ $json = file_get_contents($url);
+ $json_data = json_decode($json, true);
+ return $json_data;
+ }
+ */
+
+function loadJoinedChats(session_id){
+    $.ajax({
+        url: 'http://54.172.35.180:8080/api/chatroomusers/user_id/' + session_id,
+        type: "GET",
+        success:function(html) {
+
+            renderJoinedOwnedChats(html);
+        }
+    });
+}
+
+function renderJoinedOwnedChats(nearby){
+    var div = document.getElementById('chatlist');
+
+    //WHILE LOADING JOINED ROOMS, REMOVE LOADER AND ADD ROOM
+    div.innerHTML = '<span style="color: #A87CA0"><b>Your Rooms</b></span> | <span style="color: #044F67"><b>Nearby Rooms</b></span>';
+    div.innerHTML = div.innerHTML + '<ul class="chatHeader">Joined Chats:';
+
+    for(var instance in nearby){
+        var info = nearby[instance];
+        if(info['room_admin'] == getCookie('ID')){
+            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChats">';
+            link = link + info['Chat_title'];
+            link = link + '</li></a>';
+            div.innerHTML = div.innerHTML + link;
+        }else{
+            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChatsOwner">';
+            link = link + info['Chat_title'];
+            link = link + '</li></a>';
+            div.innerHTML = div.innerHTML + link;
+        }
+    }
+    //after loadinng Joined Room, Render Nearby Rooms
+    loadNearbyChats(session_id);
+    return;
+}
+
+function loadNearbyChats(session_id){
+    $.ajax({
+        url: 'http://54.172.35.180:8080/api/chatroom/' + session_id,
+        type: "GET",
+        success:function(html) {
+
+            renderNearbyChats(html);
+        }
+    });
+}
+
+function renderNearbyChats(nearby){
+    var div = document.getElementById('chatlist');
+    div.innerHTML = div.innerHTML + '<ul class="chatHeader">Nearby Chats:';
+
+    for(var instance in nearby){
+        var info = nearby[instance];
+        var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChats">';
+        link = link + info['Chat_title'];
+        link = link + '</li></a>';
+        div.innerHTML = div.innerHTML + link;
+
+    }
+    return;
 }
