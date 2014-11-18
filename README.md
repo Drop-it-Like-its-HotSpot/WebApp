@@ -1,7 +1,7 @@
 WebApp
 ======
 
-#Abiltiy
+#Ability
 ###register and login
 ###join and leave rooms
 ###admins can delete room
