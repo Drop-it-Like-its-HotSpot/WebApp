@@ -11,7 +11,8 @@ h3, h2 { font-family: Delicious; }
 
 body {
     font-family: Delicious;
-    background: rgb(22, 160, 133);  
+    background: rgb(22, 160, 133);
+    background: rgb(50,58,68);
 }
 .parent {
   text-align:center;

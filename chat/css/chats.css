@@ -13,7 +13,8 @@ h3, h2 { font-family: Delicious; }
 
 body {
     font-family: Delicious;
-    background: rgb(22, 160, 133);  
+    background: rgb(22, 160, 133);
+    background: rgb(50,58,68);
 }
 .container {
     margin: 0 auto;
@@ -77,6 +78,7 @@ div.contentChat{
 
 .divTopper {
     background-color: #303030;
+    background: rgb(22, 160, 133);
     width: 100%;
     height: 40px;
     color: white;
@@ -108,7 +110,7 @@ ul {
     padding-right: 5px;
     padding-bottom: 5px;
     text-decoration: none;
-    color: white;
+    color: black;
     display: flex;
     justify-content:center;
     align-content: center;
@@ -121,16 +123,28 @@ ul {
 .chatlist a {
     text-decoration: none;
 }
+.parentMessageOther {
+    width: 75%;
+    float: right;
+}
+.parentMessageUser {
+    width: 75%;
+    float: left;
+}
 .chatMessageOther{
-    background-color: #C0392B;
-    border: solid 2px #C0392B;
+    /* background-color: #C0392B;
+     border: solid 2px #C0392B;*/
+    color: #000000;
     box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
+    width: 100%;
 
 }
 .chatMessageUser {
-    background-color: rgb(22, 160, 133);
-    border: solid 2px rgb(22, 160, 133);
+    /*background-color: rgb(22, 160, 133);
+    border: solid 2px rgb(22, 160, 133);*/
+    color: black;
     box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
+    width: 100%;
 }
 
 input {
@@ -158,6 +172,7 @@ input.topInput {
 footer {
     text-align: center;
     margin: 4px auto;
+    color: white;
 }
 
 .left {

@@ -38,15 +38,6 @@ function populatePage(info){
             }
         }
     });
-/*
-    $url = "http://maps.googleapis.com/maps/ap i/geocode/json?latlng=".$lat.",".$long."&sensor=true";
-    $json = file_get_contents($url);
-    $locationData = json_decode($json, true);
-    $result = $locationData['results'];
-    $result = $result[0];
-    //var_dump($result);
-    return $result['address_components'];
-*/
     return;
 }
 

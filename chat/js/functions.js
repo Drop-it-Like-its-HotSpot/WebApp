@@ -6,9 +6,11 @@ function handle_errors(error) {
     // error handling here
 }
 function handle_geolocation_query(position){
-    latitude = position.coords.latitude;
-    longitude = position.coords.longitude;
-    onPositionReady(latitude, longitude);
+    var latitude1 = position.coords.latitude;
+    var longitude1 = position.coords.longitude;
+    latitude = latitude1;
+    longitude = longitude1;
+    onPositionReady(latitude1, longitude1);
 }
 function onPositionReady(latitude, longitude) {
     updateLocation(latitude, longitude);
@@ -117,8 +119,7 @@ function getUserProfile(user, session_id){
                         locationData = locationData['results'];
                         locationData = locationData[1];
                         locationData = locationData['formatted_address'];
-                        html['location'] = JSON.stringify(locationData);
-
+                        html['location'] = locationData;
                         loadUserProfile(html);
                     }
                 });
@@ -132,6 +133,8 @@ function loadUserProfile(userInfo){
     var ID = userInfo['User_id'];
     var email = userInfo['Email_id'];
     var location = userInfo['location'];
+    radius = userInfo['radius'];
+    renderRadius(radius);
     latitude = userInfo['Latitude'];
     longitude = userInfo['Longitude'];
     userDisplayName.innerHTML = 'WELCOME, ' + display.toUpperCase();
@@ -238,7 +241,7 @@ function renderJoinedOwnedChats(nearby){
             div.innerHTML = div.innerHTML + link;
         }
     }
-    //after loadinng Joined Room, Render Nearby Rooms
+    //after loadinng Joined Room, Render Nearby Room
     loadNearbyChats(session_id);
     return;
 }
@@ -267,4 +270,18 @@ function renderNearbyChats(nearby){
 
     }
     return;
+}
+
+function updateRadius(radius) {
+    var session_id = getCookie('session_id');
+    $.ajax({
+        type: "PUT",
+        url: 'http://54.172.35.180:8080/api/users/' + userID,
+        data:{radius: radius, session_id:session_id },
+        dataType: "JSON",
+        success:function(html) {
+            renderRadius(html['radius']);
+        }
+
+    });
 }

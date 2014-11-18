@@ -13,7 +13,7 @@
 <body>
    
     <div class="header">
-        <a href="/chat/profile.php"><img class="thelogo" src="img/logo.png"></a><br />
+        <a href="/chat/profile.html"><img class="thelogo" src="img/logo.png"></a><br />
     </div>
     
 
@@ -65,6 +65,8 @@
                         </div>
                     </ul>
                 </div>
+            </div>
+            <div class="roomDescript">
                 <?php echo ($chatInfo['Chat_Dscrpn']); ?>
             </div>
             <?php

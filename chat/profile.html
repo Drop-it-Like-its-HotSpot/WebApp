@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <link href="css/styles.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="img/logo.png">
+<title>Hotspot: Your Profile </title>
 <body>
    
     <div class="header">
@@ -24,7 +25,8 @@
 
                 </p>
                 <p id="userLocation">
-
+                <p>Radius:<data id="theRadius"> </data>
+                <br /><input class="radiusSlider" id="radiusSlider" type="range" min=".5" max="10" step="any" size="4"/></p>
                 </p>
                 <p id="userTestingInformation">
 
@@ -51,6 +53,9 @@
                         <!-- data goes here-->
                 
                 </div>
+                <div id="map-canvas">
+                    hi
+                </div>
             </div>
         </div>
     </div>
@@ -63,11 +68,14 @@
 
         var userID = getCookie('ID');
         var session_id = getCookie('session_id');
-
+        var radius;
+        var latitude;
+        var longitude;
         if(getCookie('session_id') == ""){
             window.location.href = "index.html";
         }
-        var roomC = false;
+        var roomC = false;///create chatroom click
+        var mapC = false;//load map click
         $('a').click(function (e) {
             // custom handling here
             e.preventDefault();
@@ -86,14 +94,21 @@
             if(geo_position_js.init()){
                     geo_position_js.getCurrentPosition(handle_geolocation_query,handle_errors,{enableHighAccuracy:true});
             }
-            else{
+            else {
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(handle_geolocation_query,handle_errors);
+                    navigator.geolocation.getCurrentPosition(handle_geolocation_query, handle_errors);
                 } else {
                     alert('Device probably not ready.');
                 }
             }
-            loadJoinedChats(session_id);
+
+
+            $('.radiusSlider').change(function(){
+                var newValue = this.value;
+                radius = newValue;
+                updateRadius(radius);
+                initialize();
+            });
         });
         getUserProfile(getCookie('ID'), getCookie('session_id'));
 
@@ -108,25 +123,30 @@
 
         //Home Button Function, also used when page loads
         function goHome(){
-            /*
-            $.ajax({
-                url: 'util/getrooms.php',
-                success:function(html) {
-                    $('.chatlist').html(html); // display data
-                }
-            });
-            */
+            mapC = false;
+            var mapdiv = document.getElementById('map-canvas');
+            mapdiv.style.visibility='hidden';
+            mapdiv.style.minHeight = '0px';;
             roomC = false;
+            loadJoinedChats(session_id);
         }
         //loads the chatroom div
         function loadChatroomDiv() {
+            mapC= false
+            var mapdiv = document.getElementById('map-canvas');
+            mapdiv.style.visibility='hidden';
+            mapdiv.style.minHeight = '0px';
             $('.chatlist').html(
                 '<form method="post" id="createChat" onsubmit="return false;"> <input class="topInput" type="" name="title" placeholder="Title" value="" maxlength="30" required><br/><input class="description" type="" name="description" placeholder="Short Description" value="" maxlength="30" required><br/><button type="submit" onclick="createChatroomLocal()" >Create Room</button></form>'
             ); // display data
         }
 
-
-
+        function renderRadius(radius){
+            var radiusDiv = document.getElementById('theRadius');
+            radiusDiv.innerHTML = " " + Math.round((radius + 0.00001) * 100) / 100
+            var radiusDivValue = document.getElementById('radiusSlider');
+            radiusDivValue.value = radius;
+        }
 
     </script>
 </body>
