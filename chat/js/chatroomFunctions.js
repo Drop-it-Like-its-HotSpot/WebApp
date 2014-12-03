@@ -45,8 +45,8 @@ function populatePage(info){
 function deleteRoom(room_id, session_id){
     if(confirm('Are you sure you want to delete this room?')){
         $.ajax({
-            type: "DELETE",
-            url: 'http://54.172.35.180:8080/api/chatroom/' + room_id,
+            type: "POST",
+            url: 'http://54.172.35.180:8080/api/chatroom/delete/' + room_id,
             data:{session_id:session_id },
             success:function(html) {
                 window.location.href = "profile.html";
@@ -105,7 +105,7 @@ function submitChat() {
         }
     });
 }
-function joinRoom(room) {
+function joinRoom(roomID) {
     $.ajax({
         type: "POST",
         url: 'http://54.172.35.180:8080/api/chatroomusers/',
@@ -121,8 +121,8 @@ function joinRoom(room) {
 function leaveRoom(room_id, user_id, session_id) {
     $.ajax({
         crossDomain: true,
-        type: "DELETE",
-        url: 'http://54.172.35.180:8080/api/chatroomusers/',
+        type: "POST",
+        url: 'http://54.172.35.180:8080/api/chatroomusers/delete/',
         data: {room_id: room_id, session_id: session_id},
         success: function (html) {
             window.location.href = "/chat/profile.html";

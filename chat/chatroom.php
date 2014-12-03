@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <link href="css/chats.css" rel="stylesheet">
+<link href="css/message.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="img/logo.png">
 <title>Hotspot: <?php echo ($chatInfo['Chat_title']); ?> </title>
 <body>
@@ -42,7 +43,7 @@
                 }
                 $ans = inRoom($_COOKIE['ID'], $_GET['rid'], $_COOKIE['session_id']);
                 if(!$ans){
-                    ?><button class="joinRoom" type="submit" onclick="joinRoom()">Join Room</button><?php
+                    ?><button class="joinRoom" type="submit" onclick="joinRoom(getUrlVars()['rid'])">Join Room</button><?php
                 }else{
                     ?><button class="leaveRoom" type="submit" onclick="leaveRoomLocal(getUrlVars()['rid'], getCookie('ID'), getCookie('session_id'))">Leave Room</button><?php
                 }

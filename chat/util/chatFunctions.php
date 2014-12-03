@@ -5,7 +5,6 @@ error_reporting(-1);
     //grabs all of the users for a particular room
     function getUsers($room_id, $session_id){
         //54.172.35.180:8080/api/chatroomusers/room_id/7/b0e5b36e-cf3f-4bf7-adcd-659d0c3f3c10
-        
         $url = "http://54.172.35.180:8080/api/chatroomusers/room_id/".$room_id."/".$session_id;
         $json = file_get_contents($url);
         $json_data = json_decode($json, true);
@@ -18,7 +17,7 @@ error_reporting(-1);
         $url = "http://54.172.35.180:8080/api/chatroom/".$room_id."/".$session_id;
         $json = file_get_contents($url);
         $json_data = json_decode($json, true);
-        return $json_data;
+        return $json_data[0];
     }
 
     //gets messages from a particular chatroom

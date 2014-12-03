@@ -101,12 +101,17 @@ function placeNearbyMarkers(map, rooms){
         });
         //map.setCenter(marker.getPosition())
 
-        var content = '<div class="dropInfoBox"> <h4>' + '<a href="chatroom.php?rid=' + info['chat_id'] +'">' + room + '</a></h4>' + 'Info: ' + desc + '</div>';
-        var infowindow = new google.maps.InfoWindow()
+        var content = '<div class="dropInfoBox" id="hook"> <h4>' + '<a href="chatroom.php?rid=' + info['chat_id'] +'">' + room + '</a></h4>' + 'Info: ' + desc + '</div>';
+        //var infowindow = new google.maps.InfoWindow();
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<div id="gm_content">'+content+'</div>'
+        });
 
         google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
             return function() {
                 infowindow.setContent(content);
+                $('#hook').parent().parent().parent().siblings().addClass("class_name");
                 infowindow.open(map,marker);
             };
         })(marker,content,infowindow));

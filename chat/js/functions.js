@@ -103,7 +103,7 @@ function userLogin(uemail, upassword){
 
 function getUserProfile(user, session_id){
     $.ajax({
-        url: 'http://54.172.35.180:8080/api/users/'+ user + '/' + session_id,
+        url: 'http://54.172.35.180:8080/api/users/' + session_id,
         type: "GET",
         success:function(html) {
             if(html['User_id'] == undefined){
@@ -224,18 +224,18 @@ function renderJoinedOwnedChats(nearby){
     var div = document.getElementById('chatlist');
 
     //WHILE LOADING JOINED ROOMS, REMOVE LOADER AND ADD ROOM
-    div.innerHTML = '<span style="color: #A87CA0"><b>Your Rooms</b></span> | <span style="color: #044F67"><b>Nearby Rooms</b></span>';
+    div.innerHTML = '<span style="color: steelblue"><b>Your Rooms</b></span> | <span style="color: rgb(23,58,68)"><b>Joined Rooms</b></span>';
     div.innerHTML = div.innerHTML + '<ul class="chatHeader">Joined Chats:';
 
     for(var instance in nearby){
         var info = nearby[instance];
-        if(info['room_admin'] == getCookie('ID')){
-            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChats">';
+        if(info['Room_Admin'] == getCookie('ID')){
+            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChatsOwner">';
             link = link + info['Chat_title'];
             link = link + '</li></a>';
             div.innerHTML = div.innerHTML + link;
         }else{
-            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="nearbyChatsOwner">';
+            var link = '<a href="chatroom.php?rid=' + info['chat_id'] + '"><li class="joinedChats">';
             link = link + info['Chat_title'];
             link = link + '</li></a>';
             div.innerHTML = div.innerHTML + link;
@@ -275,8 +275,8 @@ function renderNearbyChats(nearby){
 function updateRadius(radius) {
     var session_id = getCookie('session_id');
     $.ajax({
-        type: "PUT",
-        url: 'http://54.172.35.180:8080/api/users/' + userID,
+        type: "POST",
+        url: 'http://54.172.35.180:8080/api/users/put',
         data:{radius: radius, session_id:session_id },
         dataType: "JSON",
         success:function(html) {

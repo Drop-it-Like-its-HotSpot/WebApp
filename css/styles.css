@@ -39,7 +39,59 @@ small a {
 }
 
 .phone {
-    margin-top: 100px;
-    max-width: 100%;
+     margin-top: 100px;
+     max-width: 100%;
+     height: auto;
+ }
+
+.android {
+    margin-top: 10px;
+    max-width: 200px;
     height: auto;
+}
+
+div#login {
+    margin: 0 auto;
+    padding: 0em;
+    background: #f8f8f8;
+    border: 0;
+    border-radius: 10px;
+    height: auto;
+    width: 280px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.125);
+    text-align:center;
+    font-family: Delicious;
+}
+button {
+    height: 2em;
+    width: 100%;
+    border: 0px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+    background: #66CC66;
+    color:#f8f8f8;
+    font-size: 1.5em;
+}
+button:focus {
+    background: #5CB75C;
+    outline: 0;
+}
+button:hover {
+    height: 2em;
+    width: 100%;
+    border: 0px;
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+    background: #5CB75C;
+    color:#f8f8f8;
+    font-size: 1.5em;
+}
+button:active {
+    padding: 1px 0 0 0;
+    height: 2em;
+    width: 100%;
+    border: 0px;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.125);
+    background: #27B427;
+    color:#f8f8f8;
+    font-size: 1.5em;
 }

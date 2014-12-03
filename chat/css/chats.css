@@ -96,56 +96,7 @@ section{
 
 }
 
-.chatlist {
-    padding-top: 10px;
-}
-ul {
-    text-decoration: none;
-    list-style-type: none;
-    padding: 0;
-}
 
-.chatlist li {
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-    text-decoration: none;
-    color: black;
-    display: flex;
-    justify-content:center;
-    align-content: center;
-    flex-direction:column;
-    min-height: 35px;
-    margin-top: 10px;
-    border-radius: 4px;
-    box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
-}
-.chatlist a {
-    text-decoration: none;
-}
-.parentMessageOther {
-    width: 75%;
-    float: right;
-}
-.parentMessageUser {
-    width: 75%;
-    float: left;
-}
-.chatMessageOther{
-    /* background-color: #C0392B;
-     border: solid 2px #C0392B;*/
-    color: #000000;
-    box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
-    width: 100%;
-
-}
-.chatMessageUser {
-    /*background-color: rgb(22, 160, 133);
-    border: solid 2px rgb(22, 160, 133);*/
-    color: black;
-    box-shadow: 0px 1px 2px 0px rgba(0,0,0,.2);
-    width: 100%;
-}
 
 input {
   margin: 0px 0px 0px 0px;
@@ -175,21 +126,6 @@ footer {
     color: white;
 }
 
-.left {
-    font-size: 11px;
-    color: black; 
-    float: left;
-    display: inline-block;
-}
-.right {  
-    float: right;
-    display: inline-block;
-}
-
-.theDate {
-    text-align: right;
-    font-size: 11px;
-}
 
 
 
